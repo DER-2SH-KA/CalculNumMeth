@@ -1,20 +1,10 @@
 import math, os
 
-import numexpr
-
-
-def try_import_numexpr():
-    try:
-        from numexpr import evaluate
-
-    except Exception:
-        print(Exception)
-        os.system("pip install numexpr")
-        from numexpr import evaluate
-
 
 # Сделано Козловским Дмитрием ПР-22.101.
 y_string = ""
+
+
 def set_formule():
     global y_string
     while y_string == "":
@@ -34,7 +24,7 @@ def set_formule():
 
 def y_result(_x: float) -> float:
     global y_string
-    return float(numexpr.evaluate(y_string.replace(" x ", str(_x))))
+    return float(eval(y_string.replace(" x ", str(_x))))
 
 
 def write_help():
@@ -95,7 +85,7 @@ class Program(object):
 
         except ValueError as ve:
             print("--- Ошибка пользователя. Некорректный ввод ---")
-            # print(ve)
+            print(ve)
             self.set_abe()
 
     def start_calculation(self):
@@ -122,7 +112,6 @@ class Program(object):
 
 
 if __name__ == '__main__':
-    try_import_numexpr()
     print("---Добро пожаловать в программу---\n")
     set_formule()
 
