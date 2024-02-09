@@ -1,9 +1,58 @@
 import math, os
 
+import numexpr
+
+
+def try_import_numexpr():
+    try:
+        from numexpr import evaluate
+
+    except Exception:
+        print(Exception)
+        os.system("pip install numexpr")
+        from numexpr import evaluate
+
+
 # Сделано Козловским Дмитрием ПР-22.101.
+y_string = ""
+def set_formule():
+    global y_string
+    while y_string == "":
+        try:
+            print("---Введите вашу функцию для вычисления, обязательно придерживаясь правил ввода---",
+                  "\n---Правила ввода можете посмореть, введя команду \"help\" без кавычек---")
+            y_string = str(input("[Введите функцию]: "))
+
+            if y_string.lower() == "help":
+                write_help()
+                y_string = ""
+
+        except ValueError as va:
+            print("---Ошибка ввода!---")
+            print(va)
+
 
 def y_result(_x: float) -> float:
-    return float(round((math.sin(2 * _x) - math.log(_x, math.e)), 8))
+    global y_string
+    return float(numexpr.evaluate(y_string.replace(" x ", str(_x))))
+
+
+def write_help():
+    print("\n---Спецификация ввода функций---",
+          "\n\tВводить десятичные числа через точку. [К примеру, 2.4]",
+          "\n\tДля возведения в степень нужно писать слитно число, две звёздочки и степень. ",
+          "[К примеру, 2**4 = 16]",
+          "\n\tДля записи более сложных функций нужно добавлять приписку \"math.\". ",
+          "[К примеру, синус икс записывается как math.sin( x )]",
+          "\n\tДля вписания одной неизвесной переменной икс нужно отделить её с ОБЕИХ сторон пробелами. ",
+          "[К примеру, квадратный корень из икс будет записываться как math.sqrt( x )]",
+          "\n\tОбязательно указывайте приоритет (порядок) выполнения операций с помощью скобочек. ",
+          "[К примеру, (2 + 2) * 2 = 8]",
+          "\n\tЧисла Pi и Эйлера записываются как math.pi и math.e соответственно.",
+          "\n\tЛогариф записывается как math.log(число в степени, основание). ",
+          "[К примеру, натуральный логарифм записывается как math.log(1, math.e)]",
+          "\n\tТангенс и котангенс записываются как math.tan( x ) и (1 / math.tan( x )) соответствено",
+          "\n\n\tПример правильно записанной функции: math.sin(2 *  x ) - math.log( x )")
 
 
 class Program(object):
@@ -73,7 +122,10 @@ class Program(object):
 
 
 if __name__ == '__main__':
-    print("---Добро пожаловать в программу---\nЗаданная функция этой программы y = sin(2x) - ln(x).\n")
+    try_import_numexpr()
+    print("---Добро пожаловать в программу---\n")
+    set_formule()
+
     App = Program()
     App.set_abe()
     os.system("pause")
