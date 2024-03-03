@@ -21,7 +21,7 @@ def rewrite_formule_math(_formule: str) -> str:
     if "log" in _formule:
         _formule = _formule.replace("log", "math.log")
     if " e " in _formule:
-        _formule = _formule.replace(" e ", " 2.71182818284")
+        _formule = _formule.replace(" e ", " 2.7182818284")
     if " pi " in _formule:
         _formule = _formule.replace(" pi ", "3.14")
     if "sympy." in _formule:
@@ -374,7 +374,7 @@ class Calculation(Program):
                   "так как максимальный предел больше единицы.")
             print("Попробуйте ввести другую формулу икса (х)\n")
             self.start_calculation_mui()
-        elif (x_div_a > x_div_b) or (x_div_a == x_div_b):
+        elif (abs(x_div_a) > abs(x_div_b)) or (abs(x_div_a) == abs(x_div_b)):
             q = x_div_a
         else:
             q = x_div_b
