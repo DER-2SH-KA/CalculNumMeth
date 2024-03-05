@@ -59,38 +59,93 @@ def set_formule():
 
 def y_result(_x: float) -> float:
     global y_string
-    y_string_w = rewrite_formule_math(y_string)
-    y_string_w = rewrite_formule_sympy(y_string_w)
+    y_x = None
     # return float(eval(y_string_w.replace(" x ", str(_x))))
-    return float(eval(y_string_w.replace("x", str(_x))))
+    try:
+        y_string_w = rewrite_formule_math(y_string)
+        y_string_w = rewrite_formule_sympy(y_string_w)
+        y_x = float(eval(y_string_w.replace("x", str(_x))))
+    except ValueError or TypeError:
+        print(f"Произошла ошибка вычисления значения {_x}",
+              "\nПожалуйста, вычислите значение вручную и введите его, ",
+              "или напишите \"exit\", если хотите прекратить вычисление.")
+        while True:
+            typeerroranswer = str(input("[exit/значение]"))
+            if typeerroranswer.lower() == "exit":
+                sys.exit()
+            else:
+                y_x = float(typeerroranswer)
+                break
+    except ZeroDivisionError:
+        print("Поизошло деление на нуль.")
+    except Exception as ex:
+        print(f"Ошибка: {ex}")
+    finally:
+        return float(y_x)
 
 
 def y_first_derivative_result(_x: float) -> float:
     global y_string, x
-    y_string_fd_w = rewrite_formule_math(y_string)
-    y_string_fd_w = rewrite_formule_sympy(y_string_fd_w)
-    y_string_fd_w = diff(y_string_fd_w)
+    y_f_d_x = None
     # print(y_string_fd_w)
-
-    return float(eval(str(y_string_fd_w).replace("x", str(_x))))
+    try:
+        y_string_fd_w = rewrite_formule_math(y_string)
+        y_string_fd_w = rewrite_formule_sympy(y_string_fd_w)
+        y_string_fd_w = diff(y_string_fd_w)
+        y_f_d_x = float(eval(str(y_string_fd_w).replace("x", str(_x))))
+    except ValueError or TypeError:
+        print(f"Произошла ошибка вычисления первой производной значения {_x}",
+              "\nПожалуйста, вычислите первую производную вручную и введите её, ",
+              "или напишите \"exit\", если хотите прекратить вычисление.")
+        while True:
+            typeerroranswer = str(input("[exit/первая производная]"))
+            if typeerroranswer.lower() == "exit":
+                sys.exit()
+            else:
+                y_f_d_x = float(typeerroranswer)
+                break
+    except ZeroDivisionError:
+        print("Поизошло деление на нуль.")
+    except Exception as ex:
+        print(f"Ошибка: {ex}")
+    finally:
+        return float(y_f_d_x)
 
 
 def y_second_derivative_result(_x: float) -> float:
     global y_string, x
-    y_string_sd_w = rewrite_formule_math(y_string)
-    y_string_sd_w = rewrite_formule_sympy(y_string_sd_w)
-    y_string_sd_w = diff(y_string_sd_w)
-    y_string_sd_w = diff(y_string_sd_w)
+    y_s_d_x = None
     # print(y_string_sd_w)
-
-    return float(eval(str(y_string_sd_w).replace("x", str(_x))))
+    try:
+        y_string_sd_w = rewrite_formule_math(y_string)
+        y_string_sd_w = rewrite_formule_sympy(y_string_sd_w)
+        y_string_sd_w = diff(y_string_sd_w)
+        y_string_sd_w = diff(y_string_sd_w)
+        y_s_d_x = float(eval(str(y_string_sd_w).replace("x", str(_x))))
+    except ValueError or TypeError:
+        print(f"Произошла ошибка вычисления второй производной значения {_x}",
+              "\nПожалуйста, вычислите вторую производную вручную и введите её, ",
+              "или напишите \"exit\", если хотите прекратить вычисление.")
+        while True:
+            typeerroranswer = str(input("[exit/вторая производная]"))
+            if typeerroranswer.lower() == "exit":
+                sys.exit()
+            else:
+                y_s_d_x = float(typeerroranswer)
+                break
+    except ZeroDivisionError:
+        print("Поизошло деление на нуль.")
+    except Exception as ex:
+        print(f"Ошибка: {ex}")
+    finally:
+        return float(y_s_d_x)
 
 
 def write_help():
     print("\n---Спецификация ввода функций---",
           "\n\tВводить десятичные числа через точку. [К примеру, 2.4]",
-          "\n\tДля возведения в степень нужно писать слитно число, две звёздочки и степень. ",
-          "[К примеру, 2**4 = 16]",
+          "\n\tДля возведения в степень нужно писать слитно число, знак '^' и степень. ",
+          "[К примеру, 2^4 = 16]",
           # "\n\tДля записи более сложных функций нужно добавлять приписку \"math.\". ",
           # "[К примеру, синус икс записывается как math.sin( x )]",
           # "\n\tДля вписания одной неизвесной переменной икс нужно отделить её с ОБЕИХ сторон пробелами. ",
@@ -105,18 +160,19 @@ def write_help():
 
 
 def choose_method() -> str:
+    answers = ("mhd", "mk", "mh", "mui", "cm")
     print("\n---Введите метод расчёта---",
           "\n* Метод половинного деления - mhd *",
           "\n* Метод касательных - mk *",
           "\n* Метод хорд - mh *",
-          "\n* Метод простой итерации - mui *")
-
+          "\n* Метод простой итерации - mui *",
+          "\n* Комбинированный метод - cm *")
     answer = ""
     while True:
-        answer = str(input("[mhd | mk | mh | mui]: "))
+        answer = str(input(f"[{" | ".join(answers)}]: "))
         answer = answer.lower()
 
-        if answer == "mhd" or answer == "mk" or answer == "mh" or answer == "mui":
+        if answer in answers:
             break
     return answer
 
@@ -172,57 +228,32 @@ class Calculation(Program):
             if y_result(self.a) * y_result(self.c) > 0:
                 self.a = self.c
                 print(f"{y_result(self.a)} * {y_result(self.c)} > 0")
-                print(f">0\na = {self.a}\nb = {self.b}")
+                #print(f">0\na = {self.a}\nb = {self.b}")
 
             elif y_result(self.a) * y_result(self.c) < 0:
                 self.b = self.c
                 print(f"{y_result(self.a)} * {y_result(self.c)} < 0")
-                print(f"<0\na = {self.a}\nb = {self.b}")
+                #print(f"<0\na = {self.a}\nb = {self.b}")
 
             elif y_result(self.a) == 0.0:
                 # print(f"a = {self.a}\nb = {self.b}")
                 print("Результат перемножения функций равен нулю...")
-            print(f"|{self.b} - {self.a}| >= {self.e} - {abs(self.b - self.a) >= self.e}")
+            print(f"|{self.b} - {self.a}| >= {self.e} -> {abs(self.b - self.a) >= self.e}")
 
-        print(f"a = {self.a}\nb = {self.b}\ne = {self.e}")
+        #print(f"a = {self.a}\nb = {self.b}\ne = {self.e}")
         print(f"---\nРезультат равен: {round((self.a + self.b) / 2, len(str(self.e)) - 2)}")
         print(f"Величина ошибки: {round((self.b - self.a) / 2, (len(str(self.e)) - 2) * 2)}")
 
     def start_calculation_mk(self):
-        x_s = 0.0
+        x_s = None
         iteration = 1
         # print(y_first_derivative_result(self.a))
         # print(y_second_derivative_result(self.a))
+
         y_s_d_a = 0.0
         y_s_d_b = 0.0
-
-        try:
-            y_s_d_a = y_second_derivative_result(self.a)
-        except TypeError:
-            print(f"Произошла ошибка вычисления второй производной значения {self.a}",
-                  "\nПожалуйста, вычислите вторую производную вручную и введите её, ",
-                  "или напишите \"exit\", если хотите прекратить вычисление.")
-            while True:
-                typeerroranswer = str(input("[exit/вторая производная]"))
-                if typeerroranswer.lower() == "exit":
-                    sys.exit()
-                else:
-                    y_s_d_a = float(typeerroranswer)
-                    break
-
-        try:
-            y_s_d_b = y_second_derivative_result(self.b)
-        except TypeError:
-            print(f"Произошла ошибка вычисления второй производной значения {self.b}",
-                  "\nПожалуйста, вычислите вторую производную вручную и введите её, ",
-                  "или напишите \"exit\", если хотите прекратить вычисление.")
-            while True:
-                typeerroranswer = str(input("[exit/вторая производная]"))
-                if typeerroranswer.lower() == "exit":
-                    sys.exit()
-                else:
-                    y_s_d_b = float(typeerroranswer)
-                    break
+        y_s_d_a = y_second_derivative_result(self.a)
+        y_s_d_b = y_second_derivative_result(self.b)
 
         if y_result(self.a) * y_s_d_a > 0:
             x_s = self.a
@@ -230,7 +261,7 @@ class Calculation(Program):
             x_s = self.b
         print(f"X0 = {x_s}")
         # print(x_s)
-        x_s_temp = 0.0
+        x_s_temp = None
 
         while abs(y_result(x_s) / y_first_derivative_result(x_s)) >= self.e:
             try:
@@ -248,43 +279,22 @@ class Calculation(Program):
                         y_x_s_f_d = float(typeerroranswer)
                         x_s_temp = x_s - (y_result(x_s) / y_x_s_f_d)
                         break
+            print(f"X{iteration} = {x_s} - {y_result(x_s)} / {y_first_derivative_result(x_s)} = {x_s_temp}")
+            print(f"| {abs(y_result(x_s))} / {abs(y_first_derivative_result(x_s))} | >= {self.e} -> {abs(y_result(x_s) / y_first_derivative_result(x_s)) >= self.e}")
             x_s = x_s_temp
-            print(f"X{iteration} = {x_s} - {y_result(x_s)} / {y_first_derivative_result(x_s)} = {x_s}")
             iteration += 1
         print("Результат вычисления: {0}".format(round(x_s, len(str(self.e)) - 2)))
 
     def start_calculation_mh(self):
-        x_s = 0.0
         iteration = 1
         y_s_d_a = 0.0
         y_s_d_b = 0.0
-        temp_x = 10000.0
-        dynamic_value = 100.0
-        static_value = 0.0
+        temp_x = 100.0
+        dynamic_value = None
+        static_value = None
 
-        try:
-            y_s_d_a = y_second_derivative_result(self.a)
-        except TypeError:
-            print("Не удалось вычислить вторую производную числа {0}".format(self.a))
-            print("Пожалуйста введите его отдельно или напишите \"exit\" для выхода из программы.")
-            typeerroranswer = str(input("[exit/число]: ")).lower()
-
-            if typeerroranswer == "exit":
-                sys.exit()
-            else:
-                y_s_d_a = float(typeerroranswer)
-
-        try:
-            y_s_d_b = y_second_derivative_result(self.b)
-        except TypeError:
-            print("Не удалось вычислить вторую производную числа {0}".format(self.b))
-            print("Пожалуйста введите его отдельно или напишите \"exit\" для выхода из программы.")
-            typeerroranswer = str(input("[exit/число]: ")).lower()
-
-            if typeerroranswer == "exit":
-                sys.exit()
-            else:
-                y_s_d_b = float(typeerroranswer)
+        y_s_d_a = y_second_derivative_result(self.a)
+        y_s_d_b = y_second_derivative_result(self.b)
 
         if (y_result(self.a) * y_s_d_a > 0) and (y_result(self.b) * y_s_d_b < 0):
             dynamic_value = self.b
@@ -299,7 +309,7 @@ class Calculation(Program):
             try:
                 next_x = dynamic_value - (((static_value - dynamic_value) / (y_result(static_value) - y_result(dynamic_value))) * y_result(dynamic_value))
                 print(f"X{iteration} = {dynamic_value} - ((({static_value} - {dynamic_value}) / ({y_result(static_value)} - {y_result(dynamic_value)})) * {y_result(dynamic_value)})")
-            except Exception:
+            except TypeError or ValueError:
                 print(f"Не удалось вычислить следующую границу числа {dynamic_value}.")
                 print("Пожалуйста введите её отдельно или напишите \"exit\" для выхода из программы")
                 typeerroranswer = str(input("[exit/число]: ")).lower()
@@ -311,6 +321,7 @@ class Calculation(Program):
             print(f"X{iteration} = {next_x}")
             iteration += 1
             dynamic_value = next_x
+            print(f"| {dynamic_value} - {temp_x} | >= {self.e} -> {abs(dynamic_value - temp_x) >= self.e}")
         print(f"Результат вычисления: {round(dynamic_value, len(str(self.e)) - 2)}.")
 
     def start_calculation_mui(self):
@@ -331,39 +342,8 @@ class Calculation(Program):
         x_div_b = 0.0
         print(x_div)
 
-        try:
-            x_div_a = float(eval(str(x_div).replace("x", str(self.a))))
-            print(f"Производная от {self.a} = {x_div_a}")
-        except TypeError as typeerror:
-            print("\nОшибка вычисления максимальной производной. ",
-                  "Попробуйте ввести иначе выраженный x.\n",
-                  f"Или введите производную числа {self.a} самостоятельно. ")
-            while True:
-                typeerroranswer = str(input("[Другая формула - af/ввести самостоятельно - im]: "))
-                if typeerroranswer.lower() == "af":
-                    self.start_calculation_mui()
-                elif typeerroranswer.lower() == "im":
-                    x_div_a = float(input(f"Введите значение производной {self.a}: "))
-                    break
-                else:
-                    print("Нераспознааная команда. Проверьте правильность ввода команды.")
-
-        try:
-            x_div_b = float(eval(str(x_div).replace("x", str(self.b))))
-            print(f"Производная от {self.b} = {x_div_b}")
-        except TypeError as typeerror:
-            print("\nОшибка вычисления максимальной производной. ",
-                  "Попробуйте ввести иначе выраженный x.\n",
-                  f"Или введите производную числа {self.b} самостоятельно. ")
-            while True:
-                typeerroranswer = str(input("[Другая формула - af/ввести самостоятельно - im]: "))
-                if typeerroranswer.lower() == "af":
-                    self.start_calculation_mui()
-                elif typeerroranswer.lower() == "im":
-                    x_div_b = float(input(f"Введите значение производной {self.b}: "))
-                    break
-                else:
-                    print("Нераспознааная команда. Проверьте правильность ввода команды.")
+        x_div_a = float(eval(str(x_div).replace("x", str(self.a))))
+        x_div_b = float(eval(str(x_div).replace("x", str(self.b))))
 
         print("x_div_a = {0}\nx_div_b = {1}".format(x_div_a, x_div_b))
         x_s = 0.0
@@ -374,7 +354,7 @@ class Calculation(Program):
                   "так как максимальный предел больше единицы.")
             print("Попробуйте ввести другую формулу икса (х)\n")
             self.start_calculation_mui()
-        elif (abs(x_div_a) > abs(x_div_b)) or (abs(x_div_a) == abs(x_div_b)):
+        elif (x_div_a > x_div_b) or (x_div_a == x_div_b):
             q = x_div_a
         else:
             q = x_div_b
@@ -388,7 +368,7 @@ class Calculation(Program):
         # print("div_a = {0}\ndiv_b = {1}\nq = {2}\na_break = {3}".format(x_div_a, x_div_b, q, a_break))
         p = 100.0
         iteration = 1
-        print(f"X0 = {x_s}")
+        print(f"X0 = {x_s}\nbreak = {a_break}")
 
         while abs(p) > a_break:
             try:
@@ -408,11 +388,75 @@ class Calculation(Program):
                     else:
                         print("Нераспознааная команда. Проверьте правильность ввода команды.")
             p = x_s - next_x
-            print(f"p = {p}")
+            print(f"| {x_s} - {next_x} | >= {a_break} -> {abs(p) > a_break}")
             x_s = next_x
             iteration += 1
 
         print("Результат вычисления: {0}".format(round(x_s, len(str(self.e)) - 2)))
+
+    def start_calculation_cm(self):
+        iteration = 1
+        y_f_d_a = None
+        y_f_d_b = None
+        y_s_d_a = None
+        y_s_d_b = None
+        dynamic_value = 100.0
+        dynamic_value_temp = 100.0
+        static_value = 0.0
+        static_value_temp = 0.0
+
+        y_s_d_a = y_second_derivative_result(self.a)
+        y_s_d_b = y_second_derivative_result(self.b)
+
+        if ((y_result(self.a) * y_s_d_a) > 0) and ((y_result(self.b) * y_s_d_b) < 0):
+            dynamic_value = self.b
+            static_value = self.a
+        elif ((y_result(self.a) * y_s_d_a) < 0) and ((y_result(self.b) * y_s_d_b) > 0):
+            dynamic_value = self.a
+            static_value = self.b
+        else:
+            print("Ошибка назначения динамической и статической частей")
+
+        print(f"X0 = {dynamic_value}\n")
+        while abs(dynamic_value - static_value) >= self.e:
+            print(f"X{iteration}:")
+            try:
+                y_s_v_f_d = y_first_derivative_result(static_value)
+                static_value_temp = static_value - (y_result(static_value) / y_s_v_f_d)
+            except TypeError:
+                print(f"Произошла ошибка вычисления производной значения {static_value}",
+                      "\nПожалуйста, вычислите вторую производную вручную и введите её, ",
+                      "или напишите \"exit\", если хотите прекратить вычисление.")
+                while True:
+                    typeerroranswer = str(input("[exit/вторая производная]"))
+                    if typeerroranswer.lower() == "exit":
+                        sys.exit()
+                    else:
+                        y_s_v_f_d = float(typeerroranswer)
+                        static_value_temp = static_value - (y_result(static_value) / y_s_v_f_d)
+                        break
+            finally:
+                print(f"{static_value} - {y_result(static_value)} / {y_first_derivative_result(static_value)} = {static_value_temp}")
+                static_value = static_value_temp
+
+            try:
+                dynamic_value_temp = dynamic_value - (((static_value - dynamic_value) / (
+                            y_result(static_value) - y_result(dynamic_value))) * y_result(dynamic_value))
+
+            except TypeError or ValueError:
+                print(f"Не удалось вычислить следующую границу числа {dynamic_value}.")
+                print("Пожалуйста введите её отдельно или напишите \"exit\" для выхода из программы")
+                typeerroranswer = str(input("[exit/число]: ")).lower()
+                if typeerroranswer == "exit":
+                    sys.exit()
+                else:
+                    dynamic_value_temp = float(typeerroranswer)
+            finally:
+                print(f"{dynamic_value} - ((({static_value} - {dynamic_value}) / ({y_result(static_value)} - {y_result(dynamic_value)})) * {y_result(dynamic_value)})")
+                dynamic_value = dynamic_value_temp
+                print(f"X{iteration} = {dynamic_value}\n")
+            iteration += 1
+        print(f"Результат вычисления: {round(dynamic_value, len(str(self.e)) - 2)}")
 
 
 if __name__ == '__main__':
@@ -433,6 +477,8 @@ if __name__ == '__main__':
         Method.start_calculation_mh()
     elif answer_method == "mui":
         Method.start_calculation_mui()
+    elif answer_method == "cm":
+        Method.start_calculation_cm()
     else:
         print("Error on stage choose method to calculation class.")
 
